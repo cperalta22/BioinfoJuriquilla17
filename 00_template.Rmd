@@ -31,7 +31,27 @@ You may find it helpful to use the version control and code sharing system calle
 
 1. How many cell-lines are contained in the data?
 
+```{r q1}
+data("rawData")
+data("summarizedData")
+
+columnas <- colnames(pharmacoData)
+for ( i in 1:ncol(pharmacoData)){
+  cat("\nnumber of", columnas[i], ":", length(unique(pharmacoData[,i])))
+}
+
+```
+
 2. What drug concentrations were used in each study?
+
+```{r q2}
+CCLE_conc <- subset(pharmacoData, pharmacoData$study =="CCLE")
+CCLE_conc <- unique(CCLE_conc$concentration)
+GDSC_conc <- subset(pharmacoData, pharmacoData$study!="CCLE")
+GDSC_conc <- unique(GDSC_conc$concentration)
+cat("CCLE concentrations:\n", CCLE_conc, "\nCCLE total:", length(CCLE_conc))
+cat("\nGDSC concentrations:\n", GDSC_conc, "\nGDSC total:", length(GDSC_conc))
+```
 
 3. Histograms, appart from telling how is the data
 distributed, can also make evident potential
@@ -39,14 +59,41 @@ problems with the data. Plot a histogram
 of drug viabilities. Does it look as one would
 expect from the description of the data?
 
+```{r q3}
+CCLE_V <- subset(pharmacoData, pharmacoData$study =="CCLE")
+CCLE_V <- (CCLE_V$viability)
+GDSC_V <- subset(pharmacoData, pharmacoData$study!="CCLE")
+GDSC_V <- (GDSC_V$viability)
+hist(GDSC_V)
+hist(CCLE_V)
+```
+
 4. How many viability data points are within the
 expected range according to the definition of viability (e.g. above 0 
 and below 100)? Try to come up with explanations about
 the values that are out of range. Are these due to technical
 issues? Biology?
 
+```{r q4}
+ccle_viab <- pharmacoData[pharmacoData$study=="CCLE",]
+cat("\nCCLE range:", range(ccle_viab$viability))
+cat("\nCCLE viability < 0 cases:", nrow(subset(pharmacoData , 
+                                          pharmacoData$viability < 0 & pharmacoData$study == "CCLE")))
+cat("\nCCLE viability > 0 cases:", nrow(subset(pharmacoData , 
+                                          pharmacoData$viability > 0 & pharmacoData$study == "CCLE")))
+gdsc_viab <- pharmacoData[pharmacoData$study=="GDSC",]
+cat("\nGDSC range:", range(gdsc_viab$viability))
+cat("\nGDSC viability < 0 cases:", nrow(subset(pharmacoData , 
+                                          pharmacoData$viability < 0 & pharmacoData$study != "CCLE")))
+cat("\nGDSC viability > 0 cases:", nrow(subset(pharmacoData , 
+                                          pharmacoData$viability > 0 & pharmacoData$study != "CCLE")))
+```
+
 5. Read the csv file containing the summarized data files. What kind
 of variables are in the data? What does each column represents?
+```{r q5}
+colnames(summarizedData)
+```
 
 6. Plot a histogram of the viability scores separating the different drug
 doses. Are stronger drug concentrations consistent with lower viability scores?

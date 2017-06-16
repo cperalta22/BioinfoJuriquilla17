@@ -41,12 +41,6 @@ What kind of variables are in the data? Are these variables numerical and/or cat
 head( pharmacoData )
 str( pharmacoData ) #Compactly Display the Structure of an Arbitrary R Object
 nrow(pharmacoData)
-
-columnas <- colnames(pharmacoData)
-for ( i in 1:ncol(pharmacoData)){
-  cat("\nnumber of", columnas[i], ":", length(unique(pharmacoData[,i])))
-}
-
 ```
 
 How many drugs are contained in these data?
@@ -89,7 +83,21 @@ many data points are below 0 and above 100.
 range( pharmacoData$viability )
 sum( pharmacoData$viability < 0 )
 sum( pharmacoData$viability > 100 )
+cat( " Rango de -20 no hace sentido biologico")
 ```
+Trato de correr este codigo para diferenciar el rango viabilidad 
+entre estudios para contestar esta y la siguiente pregunta ....
+```{r carlos1}
+ccle_viab <- pharmacoData[pharmacoData$study=="CCLE",]
+cat("CCLE range:", range(ccle_viab$viability))
+cat("\nCCLE viability < 0 cases:", nrow(subset(pharmacoData , 
+                                          pharmacoData$viability < 0 & pharmacoData$study == "CCLE")))
+gdsc_viab <- pharmacoData[pharmacoData$study=="GDSC",]
+cat("\nGDSC range:", range(gdsc_viab$viability))
+cat("\nGDSC viability < 0 cases:", nrow(subset(pharmacoData , 
+                                          pharmacoData$viability < 0 & pharmacoData$study != "CCLE")))
+```
+
 We can also compare the distribution of viability scores between 
 the two studies using density plots. Based on the distribution of 
 the viability scores, would you say there are obvious differences 
@@ -97,7 +105,7 @@ between the two studies?
 
 ```{r}
 ggplot( pharmacoData, aes( viability, group=study, colour=study) ) +
-    geom_density(fill="white", lwd=2, alpha=0.1) + xlim(0, 170)
+    geom_density(fill="white", lwd=2, alpha=0.1) + xlim(0 , 170)
 ```
 
 The code below plots the viability scores as box-plots for each drug,
