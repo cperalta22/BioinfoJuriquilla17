@@ -39,7 +39,14 @@ What kind of variables are in the data? Are these variables numerical and/or cat
 
 ```{r quest2}
 head( pharmacoData )
-str( pharmacoData )
+str( pharmacoData ) #Compactly Display the Structure of an Arbitrary R Object
+nrow(pharmacoData)
+
+columnas <- colnames(pharmacoData)
+for ( i in 1:ncol(pharmacoData)){
+  cat("\nnumber of", columnas[i], ":", length(unique(pharmacoData[,i])))
+}
+
 ```
 
 How many drugs are contained in these data?
@@ -51,6 +58,7 @@ length( levels( pharmacoData$drug ) )
 How many drug concentrations were used in each study?
 
 ```{r quest4}
+# Este codigo esta mas chido compara las distintas cosas
 tapply( pharmacoData$doseID, pharmacoData$study, function(x){
         length( unique( x ) )
     })
@@ -103,5 +111,4 @@ ggplot( pharmacoData, aes( y=viability, x=drug, fill=study) ) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=.5)) +
     ylim(0, 200)
 ```
-
 
